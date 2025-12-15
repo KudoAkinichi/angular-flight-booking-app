@@ -17,3 +17,11 @@ export interface FlightSearchCriteria {
   date: string;
   passengers: number;
 }
+
+export interface BookingRequest {
+  flightId: number;
+  passengerName: string;
+  passengerEmail: string;
+  passengerPhone: string;
+  numberOfPassengers: number;
+}
