@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { FlightService } from '../../services/flight.service';
 import { Flight } from '../../models/flight.model';
 
@@ -16,6 +21,7 @@ export class SearchFlightsComponent implements OnInit {
   flights: Flight[] = [];
   searched = false;
   loading = false;
+  errorMessage = '';
 
   cities = [
     { code: 'DEL', name: 'New Delhi' },
@@ -26,7 +32,10 @@ export class SearchFlightsComponent implements OnInit {
     { code: 'MAA', name: 'Chennai' },
   ];
 
-  constructor(private formBuilder: FormBuilder, private flightService: FlightService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private flightService: FlightService
+  ) {
     this.searchForm = this.formBuilder.group({
       from: ['', Validators.required],
       to: ['', Validators.required],
@@ -47,21 +56,35 @@ export class SearchFlightsComponent implements OnInit {
 
     this.loading = true;
     this.searched = true;
+    this.errorMessage = '';
 
     this.flightService.searchFlights(this.searchForm.value).subscribe({
       next: (results) => {
         this.flights = results;
         this.loading = false;
       },
-      error: () => {
+      error: (error) => {
+        console.error('Search error:', error);
         this.loading = false;
+        this.errorMessage = 'Failed to search flights. Please try again.';
+        this.flights = [];
       },
     });
   }
 
   bookFlight(flight: Flight) {
+    // For now, just show an alert
+    // In real implementation, navigate to booking page
     alert(
-      `Flight booked successfully!\n\n${flight.airline}\n${flight.fromName} → ${flight.toName}\nDeparture: ${flight.departTime}\nPrice: ₹${flight.price}\n\nThank you for booking with SkyBooker!`
+      `Flight booked successfully!\n\n` +
+        `${flight.airline}\n` +
+        `${flight.fromName} → ${flight.toName}\n` +
+        `Departure: ${flight.departTime}\n` +
+        `Price: ₹${flight.price}\n\n` +
+        `Thank you for booking with SkyBooker!`
     );
+
+    // Optionally call backend booking API
+    // this.flightService.bookFlight(flight.id, passengerData).subscribe(...)
   }
 }

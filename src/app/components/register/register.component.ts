@@ -1,13 +1,18 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
@@ -15,10 +20,12 @@ export class RegisterComponent {
   registerForm: FormGroup;
   submitted = false;
   errorMessage = '';
+  successMessage = '';
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.registerForm = this.formBuilder.group(
@@ -40,7 +47,11 @@ export class RegisterComponent {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
 
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
+    if (
+      password &&
+      confirmPassword &&
+      password.value !== confirmPassword.value
+    ) {
       confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     }
@@ -54,19 +65,48 @@ export class RegisterComponent {
   onSubmit() {
     this.submitted = true;
     this.errorMessage = '';
+    this.successMessage = '';
 
     if (this.registerForm.invalid) {
       return;
     }
 
-    const { confirmPassword, ...userData } = this.registerForm.value;
-    const success = this.userService.register(userData);
+    this.loading = true;
 
-    if (success) {
-      alert('Registration successful! Please login.');
-      this.router.navigate(['/login']);
-    } else {
-      this.errorMessage = 'Email already exists. Please use a different email.';
-    }
+    // Remove confirmPassword before sending to backend
+    const { confirmPassword, ...userData } = this.registerForm.value;
+
+    this.authService.register(userData).subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.successMessage =
+          'Registration successful! Redirecting to login...';
+
+        // Reset form
+        this.registerForm.reset();
+        this.submitted = false;
+
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+      },
+      error: (error) => {
+        this.loading = false;
+        console.error('Registration error:', error);
+
+        // Handle different error scenarios
+        if (error.status === 400) {
+          this.errorMessage =
+            error.error ||
+            'Invalid registration data. Please check your inputs.';
+        } else if (error.status === 409) {
+          this.errorMessage =
+            'Email already exists. Please use a different email.';
+        } else {
+          this.errorMessage = 'Registration failed. Please try again later.';
+        }
+      },
+    });
   }
 }
