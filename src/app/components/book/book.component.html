@@ -1,0 +1,77 @@
+<div class="booking-container">
+  <h2>✈️ Flight Booking</h2>
+
+  <!-- Flight Details -->
+  <div class="section">
+    <label>Flight ID</label>
+    <input type="number" [(ngModel)]="booking.flightId" />
+  </div>
+
+  <!-- User Details -->
+  <div class="section">
+    <label>Full Name</label>
+    <input type="text" [(ngModel)]="booking.userName" />
+  </div>
+
+  <div class="section">
+    <label>Email</label>
+    <input type="email" [(ngModel)]="booking.userEmail" />
+  </div>
+
+  <div class="section">
+    <label>Seats</label>
+    <input type="number" min="1" [(ngModel)]="booking.numberOfSeats" />
+  </div>
+
+  <hr />
+
+  <!-- Passenger Details -->
+  <h3>Passenger Details</h3>
+
+  <div class="section">
+    <label>Name</label>
+    <input [(ngModel)]="booking.passengers[0].name" />
+  </div>
+
+  <div class="section">
+    <label>Age</label>
+    <input type="number" [(ngModel)]="booking.passengers[0].age" />
+  </div>
+
+  <div class="section">
+    <label>Gender</label>
+    <label>
+      <input
+        type="radio"
+        value="MALE"
+        [(ngModel)]="booking.passengers[0].gender"
+      />
+      Male
+    </label>
+    <label>
+      <input
+        type="radio"
+        value="FEMALE"
+        [(ngModel)]="booking.passengers[0].gender"
+      />
+      Female
+    </label>
+  </div>
+
+  <div class="section">
+    <label>Seat Number</label>
+    <input [(ngModel)]="booking.passengers[0].seatNumber" />
+  </div>
+
+  <div class="section">
+    <label>Meal Preference</label>
+    <select [(ngModel)]="booking.passengers[0].mealType">
+      <option value="VEG">Veg</option>
+      <option value="NON_VEG">Non-Veg</option>
+    </select>
+  </div>
+
+  <button (click)="bookFlight()">Confirm Booking</button>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+</div>

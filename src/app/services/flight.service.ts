@@ -26,8 +26,10 @@ export class FlightService {
     return this.http.get<Flight>(`${this.baseUrl}/${id}`);
   }
 
-  // Book a flight
-  bookFlight(flightId: number, passengerData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/${flightId}/book`, passengerData);
+  bookFlight(payload: any): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/api/v1.0/flight/booking/${payload.flightId}`,
+      payload
+    );
   }
 }
