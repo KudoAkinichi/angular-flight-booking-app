@@ -96,4 +96,8 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('jwt_token');
   }
+
+  changePassword(payload: any) {
+    return this.http.post(`${this.baseUrl}/change-password`, payload);
+  }
 }

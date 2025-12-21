@@ -32,4 +32,18 @@ export class FlightService {
       payload
     );
   }
+
+  getMyBookings(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:8765/api/bookings/my');
+  }
+
+  cancelBooking(bookingId: number): Observable<void> {
+    return this.http.delete<void>(
+      `http://localhost:8765/api/bookings/${bookingId}`
+    );
+  }
+
+  createFlight(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}`, payload);
+  }
 }
