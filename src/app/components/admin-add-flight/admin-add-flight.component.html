@@ -1,0 +1,11 @@
+<div class="booking-container">
+  <h2>🛠️ Add New Flight (Admin)</h2>
+
+  <input placeholder="Flight Number" [(ngModel)]="flight.flightNumber" />
+  <input placeholder="Source" [(ngModel)]="flight.source" />
+  <input placeholder="Destination" [(ngModel)]="flight.destination" />
+  <input type="number" placeholder="Seats" [(ngModel)]="flight.seats" />
+  <input type="number" placeholder="Price" [(ngModel)]="flight.price" />
+
+  <button (click)="addFlight()">Create Flight</button>
+</div>
