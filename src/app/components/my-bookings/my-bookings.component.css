@@ -1,0 +1,11 @@
+.ticket {
+  background: #2a2a2a;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.cancel-btn {
+  background: #e53935;
+  margin-top: 8px;
+}
